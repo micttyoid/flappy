@@ -1,0 +1,16 @@
+# for Linux
+[target.x86_64-unknown-linux-gnu]
+linker = "clang"
+rustflags = ["-C", "link-arg=-fuse-ld=lld", "-Zshare-generics=y"]
+
+# for Windows
+[target.x86_64-pc-windows-msvc]
+linker = "rust-lld.exe"
+
+# For WASM
+[target.wasm32-unknown-unknown]
+rustflags = ['--cfg', 'getrandom_backend="wasm_js"']
+
+[target.'cfg(target_family = "wasm")']
+runner = "wasm-server-runner"
+rustflags = ['--cfg=getrandom_backend="wasm_js"']
