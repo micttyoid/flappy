@@ -1,6 +1,8 @@
 # Flappy Bird
 
-Flappy Bird clone powered by Bevy 0.15
+Flappy Bird clone, powered by Bevy 0.15
+
+[Play](https://recruiter-magnet.lukeyoo.fyi/games/flappy)
 
 ## Start
 
