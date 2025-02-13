@@ -1,0 +1,72 @@
+#!/usr/bin/env sh
+
+PRJ_ROOT=$(dirname $(dirname $0))
+GITHUB_HOSTING_PATH=/games/flappy
+
+index_html() {
+local HOSTING_PATH=$1
+cat <<EOF
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+      html {
+        height:100vh;
+        background:
+          radial-gradient(ellipse at top     left, rgb(236, 249, 87)  15% , transparent 60%), 
+          radial-gradient(ellipse at bottom  left, rgb(247, 69, 204)  15% , transparent 60%),
+          radial-gradient(ellipse at top    right, rgb(121, 238, 196) 15% , transparent 60%),
+          radial-gradient(ellipse at bottom right, rgb(81, 82, 213)   15% , transparent 60%);
+      }
+      canvas {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);  
+        outline: 2px solid white;
+        border-radius: 3px;        
+      }
+      canvas:focus {
+        outline: 2px solid #AAFF00;
+        border-radius: 3px;
+      }
+      .meta {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+
+        font-family: "Roboto Mono", serif;
+        font-optical-sizing: auto;
+        font-weight: 450;
+        font-style: normal;
+        font-size: 0.85rem;
+        letter-spacing: -0.045rem;
+
+        opacity: 0.2;
+      }
+    </style>
+    <title>Flappy</title>
+  </head> 
+  <body>
+    <article class="meta">
+      <div>date-of-build: $(date '+%m/%d/%Y')</div>
+    </article>
+  </body>
+  <script type="module">
+    import init from '$HOSTING_PATH/flappy.js'
+    init()
+  </script>
+</html>
+EOF
+}
+
+main() {
+    cp -r $PRJ_ROOT/assets $PRJ_ROOT/dist/
+    index_html $GITHUB_HOSTING_PATH > $PRJ_ROOT/dist/index.html
+
+    # for local
+    #index_html '' > $PRJ_ROOT/dist/index.html
+}
+
+main $@
