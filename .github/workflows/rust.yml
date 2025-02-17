@@ -8,14 +8,18 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  # Disable incremental compilation for faster from-scratch builds
+  CARGO_INCREMENTAL: 0
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    # Released in April 2024
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v4
+    - name: Update
+      run: rustup update
     - name: Build
       run: cargo build --verbose
     - name: Run tests
