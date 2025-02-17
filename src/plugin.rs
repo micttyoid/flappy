@@ -1,7 +1,4 @@
-use bevy::{
-    audio::{AddAudioSource, AudioPlugin, Source, Volume},
-    prelude::*,
-};
+use bevy::{audio::AudioPlugin, prelude::*};
 
 use crate::constants::{DEFAULT_VOLUME, WINDOW_HEIGHT, WINDOW_WIDTH};
 

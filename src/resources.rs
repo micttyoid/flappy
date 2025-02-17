@@ -1,12 +1,6 @@
 use bevy::prelude::*;
 
-#[derive(Resource, Default)]
-pub struct Game {
-    pub score: u32,
-    pub state: GameState,
-}
-
-#[derive(PartialEq)]
+#[derive(States, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GameState {
     Active,
     Inactive,
@@ -16,5 +10,14 @@ pub enum GameState {
 impl Default for GameState {
     fn default() -> Self {
         GameState::Inactive
+    }
+}
+
+#[derive(Resource, Deref, DerefMut)]
+pub struct Score(pub u32);
+
+impl Score {
+    pub fn value(&self) -> u32 {
+        self.0
     }
 }

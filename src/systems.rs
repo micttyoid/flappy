@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use std::collections::VecDeque;
 
 use crate::components::*;
 use crate::constants::*;
@@ -67,63 +68,65 @@ pub fn animate_bird(time: Res<Time>, mut query: Query<(&mut Bird, &mut Sprite)>)
     }
 }
 
-// using user input, kick state
-pub fn start_game(
-    mut game: ResMut<Game>,
-    mut space_query: Query<(&mut PressSpaceBarText, &mut Visibility)>,
+pub fn reset_game(
+    mut next_state: ResMut<NextState<GameState>>,
     mut game_over_query: Query<&mut Visibility, (With<GameOverText>, Without<PressSpaceBarText>)>,
     mut bird_query: Query<(&mut Bird, &mut Transform)>,
-    keyboard_input: Res<ButtonInput<KeyCode>>,
     mut upper_pipe_query: Query<(&mut Transform, &mut UpperPipe), (With<UpperPipe>, Without<Bird>)>,
     mut lower_pipe_query: Query<
         &mut Transform,
         (With<LowerPipe>, Without<Bird>, Without<UpperPipe>),
     >,
 ) {
-    // Detect user input by method "just_pressed"
-    if !keyboard_input.just_pressed(KeyCode::Space) {
-        return;
+    // Drag pipes back and Rerandomize visible pipes
+    let mut lower_ys: VecDeque<f32> = VecDeque::new();
+
+    for (i, (mut transform, mut upper_pipe)) in upper_pipe_query.iter_mut().enumerate() {
+        let delta_x = i as f32 * 200.0 + 200.;
+        upper_pipe.passed = false;
+        transform.translation.x = 0.;
+        transform.translation.x += delta_x;
+        let (lower_y, upper_y) = random_pipe_position();
+        transform.translation.y = upper_y;
+        lower_ys.push_back(lower_y);
     }
 
-    if game.state == GameState::GameOver {
-        for (i, (mut transform, mut upper_pipe)) in upper_pipe_query.iter_mut().enumerate() {
-            let delta_x = i as f32 * 200.0 + 200.;
+    for (i, mut transform) in lower_pipe_query.iter_mut().enumerate() {
+        let delta_x = i as f32 * 200.0 + 200.;
+        transform.translation.x = 0.;
+        transform.translation.x += delta_x;
+        transform.translation.y = lower_ys.pop_front().unwrap();
+    }
 
-            upper_pipe.passed = false;
-            transform.translation.x = 0.;
-            transform.translation.x += delta_x;
-        }
-
-        for (i, mut transform) in lower_pipe_query.iter_mut().enumerate() {
-            let delta_x = i as f32 * 200.0 + 200.;
-
-            transform.translation.x = 0.;
-            transform.translation.x += delta_x;
-        }
-    };
-
-    game.state = GameState::Active;
-
-    // Reset from previous game
+    // Reset bird
     for (mut bird, mut transform) in bird_query.iter_mut() {
         bird.velocity = 0.0;
         transform.translation.y = 0.0;
         transform.rotation = Quat::from_rotation_z(0.0);
     }
 
+    // Hiding the GameOverText
+    let mut game_over_visibility = game_over_query.single_mut();
+    *game_over_visibility = Visibility::Hidden;
+
+    next_state.set(GameState::Inactive);
+}
+
+pub fn start_game(
+    mut next_state: ResMut<NextState<GameState>>,
+    mut space_query: Query<(&mut PressSpaceBarText, &mut Visibility)>,
+) {
+    next_state.set(GameState::Active);
+
     // Hiding the PressSpaceBarText
     let (mut space, mut visibility) = space_query.single_mut();
     space.0.reset();
     *visibility = Visibility::Hidden;
-
-    // Hiding the GameOverText
-    let mut game_over_visibility = game_over_query.single_mut();
-    *game_over_visibility = Visibility::Hidden;
 }
 
 pub fn gravity(
+    mut next_state: ResMut<NextState<GameState>>,
     time: Res<Time>,
-    mut game: ResMut<Game>,
     mut query: Query<(&mut Bird, &mut Transform)>,
     mut game_over_query: Query<&mut Visibility, With<GameOverText>>,
     mut commands: Commands,
@@ -160,7 +163,7 @@ pub fn gravity(
             bird.velocity = 0.0;
 
             // Gameover
-            game.state = GameState::GameOver;
+            next_state.set(GameState::GameOver);
             *game_over_query.single_mut() = Visibility::Visible;
 
             // play game over sound
@@ -173,15 +176,7 @@ pub fn gravity(
     }
 }
 
-pub fn jump(
-    mut query: Query<&mut Bird>,
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-) {
-    if !keyboard_input.just_pressed(KeyCode::Space) {
-        return;
-    }
+pub fn jump(mut query: Query<&mut Bird>, mut commands: Commands, asset_server: Res<AssetServer>) {
     // if keyboard pressed
     commands.spawn((
         AudioPlayer::new(asset_server.load("audio/wing.ogg")),
@@ -196,6 +191,7 @@ pub fn jump(
 }
 
 pub fn pipes(
+    mut next_state: ResMut<NextState<GameState>>,
     time: Res<Time>,
     mut upper_pipe_query: Query<(&mut UpperPipe, &mut Transform)>,
     mut lower_pipe_query: Query<(&LowerPipe, &mut Transform), Without<UpperPipe>>,
@@ -203,7 +199,6 @@ pub fn pipes(
     mut bird_query: Query<&Transform, (With<Bird>, Without<LowerPipe>, Without<UpperPipe>)>,
     mut game_over_query: Query<&mut Visibility, With<GameOverText>>,
     asset_server: Res<AssetServer>,
-    mut game: ResMut<Game>,
     mut commands: Commands,
 ) {
     let delta = time.delta().as_secs_f32();
@@ -264,7 +259,8 @@ pub fn pipes(
 
     for bird_transform in bird_query.iter_mut() {
         let mut game_over = || {
-            game.state = GameState::GameOver;
+            next_state.set(GameState::GameOver);
+
             *game_over_query.single_mut() = Visibility::Visible;
 
             // Play game over sound
@@ -288,8 +284,8 @@ pub fn pipes(
     }
 }
 
-pub fn score(
-    mut game: ResMut<Game>,
+pub fn update_score(
+    mut score: ResMut<Score>,
     bird_query: Query<(&Bird, &Transform)>,
     mut upper_pipe_query: Query<(&mut UpperPipe, &Transform)>,
     mut commands: Commands,
@@ -301,7 +297,8 @@ pub fn score(
             let passed_state = upper_pipe.passed;
 
             if passed && !passed_state {
-                game.score += 1;
+                **score += 1;
+
                 upper_pipe.passed = true;
 
                 commands.spawn((
@@ -309,14 +306,14 @@ pub fn score(
                     PlaybackSettings::DESPAWN,
                 ));
 
-                println!("Score: {}", game.score);
+                println!("Score: {}", score.to_string());
             }
         }
     }
 }
 
-pub fn render_score(game: Res<Game>, mut query: Query<&mut Sprite, With<ScoreText>>) {
-    let score_string = format!("{:03}", game.score);
+pub fn render_score(score: Res<Score>, mut query: Query<&mut Sprite, With<ScoreText>>) {
+    let score_string = format!("{:03}", score.value());
     let score_digits: Vec<usize> = score_string
         .chars()
         .map(|c| c.to_digit(10).unwrap() as usize)
