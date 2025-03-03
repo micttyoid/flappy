@@ -4,6 +4,12 @@ Flappy Bird clone, powered by Bevy 0.15
 
 [Play](https://recruiter-magnet.lukeyoo.fyi/games/flappy)
 
+## Browser-specific configuration to play
+
+### LibreWolf
+1. Go to `about:config`
+2. Set `webgl.disabled` to `false`
+
 ## Start
 
 ```sh
@@ -23,7 +29,7 @@ $ cargo build --release --target wasm32-unknown-unknown
 $ wasm-bindgen --out-dir dist --out-name flappy \
     --target web target/wasm32-unknown-unknown/release/flappy.wasm
 
-$ ./scripts/distmore.sh
+$ ./scripts/distmore
 $ cd dist && basic-http-server
 ```
 
