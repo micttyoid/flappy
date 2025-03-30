@@ -22,7 +22,10 @@ pub fn setup(
         Sprite {
             // Bevy expects the assets to be in 'assets/'
             image: asset_server.load("texture/background.png"),
-            custom_size: Some(Vec2::new(WINDOW_WIDTH + 288.0 * 2., WINDOW_HEIGHT)), // Adding a custom size
+            custom_size: Some(Vec2::new(
+                WINDOW_WIDTH + 288.0 * 2.,
+                WINDOW_HEIGHT,
+            )), // Adding a custom size
             image_mode: SpriteImageMode::Tiled {
                 tile_x: true,
                 tile_y: false,
@@ -100,13 +103,15 @@ pub fn setup(
             asset_server.load("texture/bird.png"),
             TextureAtlas {
                 index: 1,
-                layout: texture_atlas_layouts.add(TextureAtlasLayout::from_grid(
-                    UVec2::new(34, 24),
-                    3,
-                    1,
-                    None,
-                    None,
-                )),
+                layout: texture_atlas_layouts.add(
+                    TextureAtlasLayout::from_grid(
+                        UVec2::new(34, 24),
+                        3,
+                        1,
+                        None,
+                        None,
+                    ),
+                ),
             },
         ),
         Bird {

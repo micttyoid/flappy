@@ -1,12 +1,12 @@
 # Flappy Bird
 
-Flappy Bird clone, powered by Bevy 0.15
+Flappy Bird clone, powered by Bevy
 
 [Play](https://recruiter-magnet.lukeyoo.fyi/games/flappy)
 
 ## Browser-specific configuration to play
 
-### LibreWolf
+**LibreWolf**
 1. Go to `about:config`
 2. Set `webgl.disabled` to `false`
 

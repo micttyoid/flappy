@@ -14,7 +14,7 @@ cat <<EOF
       html {
         height:100vh;
         background:
-          radial-gradient(ellipse at top     left, rgb(236, 249, 87)  15% , transparent 60%), 
+          radial-gradient(ellipse at top     left, rgb(236, 249, 87)  15% , transparent 60%),
           radial-gradient(ellipse at bottom  left, rgb(247, 69, 204)  15% , transparent 60%),
           radial-gradient(ellipse at top    right, rgb(121, 238, 196) 15% , transparent 60%),
           radial-gradient(ellipse at bottom right, rgb(81, 82, 213)   15% , transparent 60%);
@@ -23,9 +23,9 @@ cat <<EOF
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);  
+        transform: translate(-50%, -50%);
         outline: 2px solid white;
-        border-radius: 3px;        
+        border-radius: 3px;
       }
       canvas:focus {
         outline: 2px solid #AAFF00;
@@ -46,8 +46,10 @@ cat <<EOF
         opacity: 0.2;
       }
     </style>
+    <meta name='description' content='Flappy clone powered by Bevy engine'>
+    <meta name='author' content='Luke Yoo (w.lukeyoo@gmail.com)'>
     <title>Flappy</title>
-  </head> 
+  </head>
   <body>
     <article class="meta">
       <div>date-of-build: $(date '+%m/%d/%Y')</div>

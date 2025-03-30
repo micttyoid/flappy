@@ -1,4 +1,5 @@
-use bevy::{input::common_conditions::input_just_pressed, prelude::*};
+use bevy::prelude::*;
+//use bevy::input::common_conditions::input_just_pressed;
 use plugin::MyPlugin;
 use resources::*;
 use setup::setup;
@@ -34,7 +35,10 @@ fn main() {
             Update,
             blink_space_bar_text.run_if(in_state(GameState::Inactive)),
         )
-        .add_systems(Update, move_background.run_if(in_state(GameState::Active)))
+        .add_systems(
+            Update,
+            move_background.run_if(in_state(GameState::Active)),
+        )
         .add_systems(Update, move_ground.run_if(in_state(GameState::Active)))
         .add_systems(Update, animate_bird.run_if(in_state(GameState::Active)))
         .add_systems(
