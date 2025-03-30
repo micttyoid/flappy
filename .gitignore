@@ -1,2 +1,67 @@
-/dist
+# Cloudflare
+.wrangler/
+
+# Database populated for testing
+var/
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Distribution of documentation
+
+dist.docs/
+
+# Javascript / Web application
+dist/
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Mac OS X
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*$py.class
+.Python/
+.cache
+.eggs/
+.pytest_cache
+.coverage
+.coverage.*
+.python-version
+coverage.xml
+pip-wheel-metadata/
+pytestdebug.log
+
+# Random mess
+.idea
+
+# Rust
 /target
+
+# Security/Environment
+*.env
+.env.*
+.venv
+env/
+venv/
+*.pem
+
+# VSCode
+.editorconfig
+.vscode
+out/
+
+# Yarn v2
+.yarn/build-state.yml
+.yarn/cache
+.yarn/install-state.gz
+.yarn/unplugged
+.pnp.*
