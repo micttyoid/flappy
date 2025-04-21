@@ -1,0 +1,3 @@
+[submodule ".profs"]
+	path = .profs
+	url = https://github.com/micttyoid/flappy-profiles
