@@ -4,7 +4,7 @@ version = "1.0.4"
 edition = "2024"
 
 [dependencies]
-bevy = { version = "0.15.2", features = ["dynamic_linking"] }
+bevy = { version = "0.15.3" }
 rand = "0.9.0"
 getrandom = { version = "0.3", features = ["wasm_js"] }
 
@@ -15,6 +15,15 @@ uuid = { version = "1.12.1", default-features = false, features = ["js"] }
 [profile.dev]
 opt-level = 1
 
-# Enable high optimizations
-[profile.dev.package."*"]
-opt-level = 3
+# Profiler
+[profile.tracy]
+inherits = "release"
+bevy = { features = ["trace_tracy"] }
+
+[dev-dependencies]
+bevy = { version = "0.15.3", default-features = false, features = [
+    "trace_tracy",
+    "dynamic_linking",
+] }
+tracing-tracy = "0.11.4"
+tracy-client = "0.18.0"
