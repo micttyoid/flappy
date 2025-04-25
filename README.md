@@ -13,24 +13,8 @@ Flappy Bird clone, powered by Bevy
 ## Start
 
 ```sh
-$ cargo install
+$ cargo clean
 $ cargo run --features "bevy/dynamic_linking"
-```
-
-## Deploy in wasm
-
-```sh
-$ rustup target add wasm32-unknown-unknown
-```
-
-```sh
-$ cargo build --release --target wasm32-unknown-unknown
-
-$ wasm-bindgen --out-dir dist --out-name flappy \
-    --target web target/wasm32-unknown-unknown/release/flappy.wasm
-
-$ ./scripts/distmore
-$ cd dist && basic-http-server
 ```
 
 ## References

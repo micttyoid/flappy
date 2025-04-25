@@ -1,10 +1,11 @@
 Things to do for Flappy
 
-
 ===============
 Short term work
 ===============
 
 * Collect profiles of in-game zones only
 
-* Bracing for change(impact?) from v0.16
+* Audio problem for Target `wasm32`
+
+  [Reference](https://wasmbyexample.dev/examples/reading-and-writing-audio/reading-and-writing-audio.rust.en-us)

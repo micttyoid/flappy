@@ -11,7 +11,7 @@ pub fn blink_space_bar_text(
     mut query: Query<(&mut PressSpaceBarText, &mut Visibility)>,
 ) {
     // Panic if there are more than one entity coming back from the query
-    let (mut space, mut visibility) = query.single_mut();
+    let (mut space, mut visibility) = query.single_mut().unwrap();
     let timer = &mut space.0;
 
     // Tick the timer
@@ -30,12 +30,11 @@ pub fn move_background(
     time: Res<Time>,
     mut query: Query<&mut Transform, With<Background>>,
 ) {
-    let mut background_transform = query.single_mut();
+    let mut background_transform = query.single_mut().unwrap();
     let delta = time.delta().as_secs_f32();
 
     // 20 unit per delta
     let delta_x = 20. * delta;
-
     background_transform.translation.x -= delta_x;
 
     // Repeat at about half way total length
@@ -48,7 +47,7 @@ pub fn move_ground(
     time: Res<Time>,
     mut query: Query<&mut Transform, With<Ground>>,
 ) {
-    let mut ground_transform = query.single_mut();
+    let mut ground_transform = query.single_mut().unwrap();
     let delta = time.delta().as_secs_f32();
 
     // Move faster because it's closer to the camera perspective
@@ -125,7 +124,7 @@ pub fn reset_game(
     }
 
     // Hiding the GameOverText
-    let mut game_over_visibility = game_over_query.single_mut();
+    let mut game_over_visibility = game_over_query.single_mut().unwrap();
     *game_over_visibility = Visibility::Hidden;
 
     // Reset the score
@@ -141,7 +140,7 @@ pub fn start_game(
     next_state.set(GameState::Active);
 
     // Hiding the PressSpaceBarText
-    let (mut space, mut visibility) = space_query.single_mut();
+    let (mut space, mut visibility) = space_query.single_mut().unwrap();
     space.0.reset();
     *visibility = Visibility::Hidden;
 }
@@ -189,7 +188,7 @@ pub fn gravity(
 
             // Gameover
             next_state.set(GameState::GameOver);
-            *game_over_query.single_mut() = Visibility::Visible;
+            *game_over_query.single_mut().unwrap() = Visibility::Visible;
 
             // play game over sound
             commands.spawn((
@@ -301,7 +300,7 @@ pub fn pipes(
         let mut game_over = || {
             next_state.set(GameState::GameOver);
 
-            *game_over_query.single_mut() = Visibility::Visible;
+            *game_over_query.single_mut().unwrap() = Visibility::Visible;
 
             // Play game over sound
             commands.spawn((

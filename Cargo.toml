@@ -4,12 +4,38 @@ version = "1.0.4"
 edition = "2024"
 
 [dependencies]
-bevy = { version = "0.15.3" }
-rand = "0.9.0"
-getrandom = { version = "0.3", features = ["wasm_js"] }
+# https://bevyengine.org/learn/migration-guides/0-15-to-0-16/#support-for-non-browser-wasm
+# Sake of simplicity for beginners, adding each `bevy_*` is avoided
+# so no `default-features = false`
+bevy = { version = "0.16.0" }
+rand = "0.9.1"
+getrandom = "0.3"
 
+# WASM needs some cares
 [target.'cfg(target_arch = "wasm32")'.dependencies]
+#bevy = { version = "0.16.0", features = ["web"] }
+bevy = { version = "0.16.0" }
 uuid = { version = "1.12.1", default-features = false, features = ["js"] }
+getrandom = { version = "0.3", features = ["wasm_js"] }
+# Bindgen seems taking care of all(except audio)
+#web-sys = { version = "0.3.77", features = [
+#    "AudioContext",
+#    "AudioDestinationNode",
+#    "AudioWorklet",
+#    "AudioWorkletNode",
+#    "AudioWorkletNodeOptions",
+#    "Blob",
+#    "BlobPropertyBag",
+#    "Document",
+#    "Event",
+#    "HtmlInputElement",
+#    "HtmlLabelElement",
+#    "Url",
+#    "Window",
+#] }
+#wasm-bindgen = "0.2.100"
+#console_error_panic_hook = "0.1.7"
+
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]
@@ -21,7 +47,7 @@ inherits = "release"
 bevy = { features = ["trace_tracy"] }
 
 [dev-dependencies]
-bevy = { version = "0.15.3", default-features = false, features = [
+bevy = { version = "0.16.0", default-features = false, features = [
     "trace_tracy",
     "dynamic_linking",
 ] }

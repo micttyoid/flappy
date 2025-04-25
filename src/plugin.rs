@@ -1,4 +1,12 @@
-use bevy::{audio::AudioPlugin, prelude::*};
+use bevy::{
+    audio::{
+        AudioPlugin,
+        GlobalVolume,
+        // 0.16
+        Volume,
+    },
+    prelude::*,
+};
 
 use crate::constants::{DEFAULT_VOLUME, WINDOW_HEIGHT, WINDOW_WIDTH};
 
@@ -18,9 +26,18 @@ impl Plugin for MyPlugin {
                     ..default()
                 })
                 .set(AudioPlugin {
-                    global_volume: GlobalVolume::new(DEFAULT_VOLUME),
+                    //global_volume: GlobalVolume::new(Volume::Decibels(DEFAULT_VOLUME)),
+                    global_volume: GlobalVolume::new(Volume::Linear(
+                        DEFAULT_VOLUME,
+                    )),
                     ..default()
                 }),
         );
+        /*
+        #[cfg(target_arch = "wasm32")]
+        {
+            ... wasm32 specific ...
+        }
+        */
     }
 }

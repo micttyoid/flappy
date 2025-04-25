@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
 PRJ_ROOT=$(dirname $(dirname $0))
-GITHUB_HOSTING_PATH=/games/flappy
+DEFAULT_GITHUB_HOSTING_PATH=/games/flappy
+GITHUB_HOSTING_PATH=${GITHUB_HOSTING_PATH:-$DEFAULT_GITHUB_HOSTING_PATH}
 
 index_html() {
 local HOSTING_PATH=$1
@@ -65,10 +66,16 @@ EOF
 
 main() {
     cp -r $PRJ_ROOT/assets $PRJ_ROOT/dist/
-    index_html $GITHUB_HOSTING_PATH > $PRJ_ROOT/dist/index.html
 
-    # for local
-    #index_html '' > $PRJ_ROOT/dist/index.html
+    if [ $GITHUB_HOSTING_PATH = '/' ] || \
+       [ $GITHUB_HOSTING_PATH = '.' ] || \
+       [ $GITHUB_HOSTING_PATH = './' ]; then
+        echo 'For local'
+        index_html '' > $PRJ_ROOT/dist/index.html
+    else
+        echo 'For deployment'
+        index_html $GITHUB_HOSTING_PATH > $PRJ_ROOT/dist/index.html
+    fi
 }
 
 main $@
