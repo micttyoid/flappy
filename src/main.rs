@@ -13,6 +13,7 @@ mod setup;
 mod systems;
 mod utils;
 
+// Encouraged to use `bevy_enhanced_input` in practice
 fn has_user_input(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mouse_button_input: Res<ButtonInput<MouseButton>>,
